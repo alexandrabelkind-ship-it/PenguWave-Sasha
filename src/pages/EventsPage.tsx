@@ -20,10 +20,12 @@ export default function EventsPage() {
   });
 
   const severityColor = (s: string) => {
-    if (s === "HIGH") return "red";
-    if (s === "MEDIUM") return "orange";
-    return "green";
-  };
+  if (s === "CRITICAL") return "#7c3aed"; // purple  ← ADD
+  if (s === "HIGH") return "red";
+  if (s === "MEDIUM") return "orange";
+  if (s === "LOW") return "green";        // ← make LOW explicit
+  return "#999";                          // ← unknown severity → grey, not green
+};
 
   return (
     <div className="page-container">
@@ -38,15 +40,16 @@ export default function EventsPage() {
           style={{ width: "100%", maxWidth: 400 }}
         />
         <select
-          value={severityFilter}
-          onChange={(e) => setSeverityFilter(e.target.value)}
-          style={{ width: 140 }}
-        >
-          <option value="ALL">All Severities</option>
-          <option value="HIGH">High</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="LOW">Low</option>
-        </select>
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value)}
+            style={{ width: 140 }}
+          >
+            <option value="ALL">All Severities</option>
+            <option value="CRITICAL">Critical</option>  {/* ← ADD */}
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+          </select>
       </div>
 
       {search && (

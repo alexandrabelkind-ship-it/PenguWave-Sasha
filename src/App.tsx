@@ -1,30 +1,21 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import LoginModal from "./components/LoginModal";
+import { AuthProvider } from "./AuthContext";
+import AppLayout from "./components/AppLayout";
+import RequireAccess from "./components/RequireAccess";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
 import EventsPage from "./pages/EventsPage";
 import UsersPage from "./pages/UsersPage";
 import NotFound from "./pages/NotFound";
-import { logout } from "./api";
 
 type Theme = "dark" | "light";
-
-/** Read the current auth identity from localStorage (null when logged out). */
-function readEmail(): string | null {
-  return localStorage.getItem("token") ? localStorage.getItem("email") : null;
-}
 
 function readTheme(): Theme {
   return localStorage.getItem("theme") === "light" ? "light" : "dark";
 }
 
 function App() {
-  // Show the login modal on first visit unless it was already dismissed this
-  // session. Computed lazily so we don't trigger an extra render via useEffect.
-  const [showLogin, setShowLogin] = useState(
-    () => !sessionStorage.getItem("login-dismissed")
-  );
-  const [userEmail, setUserEmail] = useState<string | null>(readEmail);
   const [theme, setTheme] = useState<Theme>(readTheme);
 
   const toggleTheme = () => {
@@ -34,37 +25,42 @@ function App() {
     document.documentElement.setAttribute("data-theme", next);
   };
 
-  const handleCloseLogin = () => {
-    sessionStorage.setItem("login-dismissed", "true");
-    setShowLogin(false);
-    // A successful login persisted token/email; reflect it in the navbar.
-    setUserEmail(readEmail());
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    setUserEmail(null);
-  };
-
   return (
-    <>
-      <Navbar
-        userEmail={userEmail}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onLoginClick={() => setShowLogin(true)}
-        onLogout={handleLogout}
-      />
-      <div className="container">
-        <Routes>
-          <Route path="/" element={<Navigate to="/events" replace />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/users" element={<UsersPage />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Authenticated app shell (navbar + sidebar). */}
+        <Route element={<AppLayout theme={theme} onToggleTheme={toggleTheme} />}>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAccess page="dashboard">
+                <DashboardPage />
+              </RequireAccess>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <RequireAccess page="events" pageName="Events">
+                <EventsPage />
+              </RequireAccess>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <RequireAccess page="users" pageName="User Management">
+                <UsersPage />
+              </RequireAccess>
+            }
+          />
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-      {showLogin && <LoginModal onClose={handleCloseLogin} />}
-    </>
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 

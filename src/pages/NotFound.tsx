@@ -21,7 +21,7 @@ export default function NotFound() {
       <p style={{ color: "var(--text-faint)", marginBottom: 30 }}>
         The page you're looking for doesn't exist or has been moved.
       </p>
-      <Link to="/events" style={{ color: "var(--primary)" }}>
+      <Link to="/dashboard" style={{ color: "var(--primary)" }}>
         ← Back to shore
       </Link>
     </div>

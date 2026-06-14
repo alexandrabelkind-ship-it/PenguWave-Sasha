@@ -52,6 +52,9 @@ export async function login(email: string, password: string): Promise<AuthRespon
   if (data.user?.role) {
     localStorage.setItem("role", data.user.role);
   }
+  if (data.user?.email) {
+    localStorage.setItem("email", data.user.email);
+  }
   return data;
 }
 
@@ -61,6 +64,7 @@ export async function logout(): Promise<void> {
   } finally {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("email");
   }
 }
 

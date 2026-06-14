@@ -21,7 +21,7 @@ export default function UsersPage() {
     return (
       <div className="page-container">
         <h1>User Management</h1>
-        <p style={{ color: "#999" }}>
+        <p style={{ color: "var(--text-faint)" }}>
           You don't have permission to view this page. Admin access is required.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function UsersPage() {
       </div>
 
       {showForm && (
-        <div style={{ border: "1px solid #ddd", padding: 16, marginBottom: 20, background: "#fafafa" }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: 16, marginBottom: 20, background: "var(--bg-subtle)" }}>
           <h3 style={{ marginBottom: 12 }}>New User</h3>
           <form onSubmit={handleAddUser}>
             <div style={{ marginBottom: 8 }}>
@@ -101,10 +101,11 @@ export default function UsersPage() {
         </div>
       )}
 
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
             <th>Role</th>
             <th>Status</th>
             <th>Actions</th>
@@ -116,15 +117,15 @@ export default function UsersPage() {
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>
-                <span style={{ color: user.status === "active" ? "green" : "#999" }}>
+                <span style={{ color: user.status === "active" ? "#16a34a" : "var(--text-faint)" }}>
                   {user.status}
                 </span>
               </td>
               <td>
                 <button
                   type="button"
+                  className="btn-danger btn-sm"
                   onClick={() => handleDelete(user.id)}
-                  style={{ color: "red", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                 >
                   Delete
                 </button>
@@ -132,9 +133,10 @@ export default function UsersPage() {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
 
-      {users.length === 0 && <p style={{ color: "#999" }}>No users.</p>}
+      {users.length === 0 && <p style={{ color: "var(--text-faint)" }}>No users.</p>}
     </div>
   );
 }

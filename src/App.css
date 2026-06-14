@@ -710,8 +710,15 @@ th.sortable:hover {
     align-items: stretch;
   }
 
+  /* In a vertical flex layout the inline `flex: 1 1 240px` would apply 240px
+     as a height basis and grow, stretching the search box into a tall square.
+     Pin it to auto height so it stays a normal single-line input. */
   .filter-bar > input {
+    flex: 0 0 auto !important;
+    width: 100%;
     max-width: none !important;
+    height: auto;
+    padding: 8px 12px;
   }
 
   .date-field,

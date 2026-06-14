@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 
 interface NavbarProps {
+  userEmail: string | null;
   onLoginClick: () => void;
+  onLogout: () => void;
 }
 
-export default function Navbar({ onLoginClick }: NavbarProps) {
+export default function Navbar({ userEmail, onLoginClick, onLogout }: NavbarProps) {
   const location = useLocation();
 
   return (
@@ -27,9 +29,20 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
         >
           Users
         </Link>
-        <button onClick={onLoginClick} className="navbar-login-btn">
-          Login
-        </button>
+        {userEmail ? (
+          <>
+            <span className="navbar-user" title={userEmail}>
+              {userEmail}
+            </span>
+            <button onClick={onLogout} className="navbar-login-btn">
+              Logout
+            </button>
+          </>
+        ) : (
+          <button onClick={onLoginClick} className="navbar-login-btn">
+            Login
+          </button>
+        )}
       </div>
     </nav>
   );

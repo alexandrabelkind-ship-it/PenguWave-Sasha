@@ -5,6 +5,12 @@ import LoginModal from "./components/LoginModal";
 import EventsPage from "./pages/EventsPage";
 import UsersPage from "./pages/UsersPage";
 import NotFound from "./pages/NotFound";
+import { logout } from "./api";
+
+/** Read the current auth identity from localStorage (null when logged out). */
+function readEmail(): string | null {
+  return localStorage.getItem("token") ? localStorage.getItem("email") : null;
+}
 
 function App() {
   // Show the login modal on first visit unless it was already dismissed this
@@ -12,15 +18,27 @@ function App() {
   const [showLogin, setShowLogin] = useState(
     () => !sessionStorage.getItem("login-dismissed")
   );
+  const [userEmail, setUserEmail] = useState<string | null>(readEmail);
 
   const handleCloseLogin = () => {
     sessionStorage.setItem("login-dismissed", "true");
     setShowLogin(false);
+    // A successful login persisted token/email; reflect it in the navbar.
+    setUserEmail(readEmail());
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setUserEmail(null);
   };
 
   return (
     <>
-      <Navbar onLoginClick={() => setShowLogin(true)} />
+      <Navbar
+        userEmail={userEmail}
+        onLoginClick={() => setShowLogin(true)}
+        onLogout={handleLogout}
+      />
       <div className="container">
         <Routes>
           <Route path="/" element={<Navigate to="/events" replace />} />

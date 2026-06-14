@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { SecurityEvent } from "../types";
-import { SEVERITIES, severityColor } from "../severity";
+import { SEVERITIES, severityColor, SEVERITY_DESCRIPTIONS } from "../severity";
 import { loadEvents } from "../eventsData";
 import SecurityCharts from "../components/SecurityCharts";
 import HelpTip from "../components/HelpTip";
@@ -80,12 +80,32 @@ export default function DashboardPage() {
                     aria-hidden="true"
                   />
                   {severity}
+                  <HelpTip position="bottom" text={SEVERITY_DESCRIPTIONS[severity]} />
                 </span>
                 <span className="summary-stat-value" style={{ color: severityColor(severity) }}>
                   {severityCounts[severity] ?? 0}
                 </span>
               </div>
             ))}
+          </section>
+
+          <section className="severity-legend">
+            <h2 className="section-title">
+              What the severity levels mean
+              <HelpTip text="Use these definitions to prioritize your response. Higher severities demand faster action." />
+            </h2>
+            <dl className="severity-legend-list">
+              {SEVERITIES.map((severity) => (
+                <div key={severity} className="severity-legend-item">
+                  <dt>
+                    <span className="severity-badge" style={{ backgroundColor: severityColor(severity) }}>
+                      {severity}
+                    </span>
+                  </dt>
+                  <dd>{SEVERITY_DESCRIPTIONS[severity]}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
 
           <SecurityCharts events={events} />

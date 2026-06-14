@@ -1,12 +1,12 @@
 // Shared helpers for PenguWave.
+import DOMPurify from "dompurify";
 
 /**
  * Sanitize a string before rendering it as HTML.
  * Strips dangerous markup so values can be safely shown to the user.
  */
 export function sanitizeHtml(input: string): string {
-  // TODO: wire up DOMPurify
-  return input;
+  return DOMPurify.sanitize(input);
 }
 
 /**

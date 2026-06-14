@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { User } from "../types";
-import { isAdmin } from "../utils";
+import HelpTip from "../components/HelpTip";
+import { useAuth } from "../useAuth";
 
 export default function UsersPage() {
-  // Client-side guard so non-admins don't see the management UI. This is a
-  // convenience only — the real authorization MUST be enforced by the backend
-  // on every /api/users request (see api_contract.md). See isAdmin() in utils.
+  const { user: currentUser } = useAuth();
+
+  // Access to this page is gated by RBAC at the route level (admin only). The
+  // backend MUST still enforce authorization on every /api/users request — the
+  // client guard is a convenience for hiding UI, not a security control.
   const [users, setUsers] = useState<User[]>([
     { id: "1", email: "admin@penguwave.io", role: "admin", status: "active" },
     { id: "2", email: "analyst@penguwave.io", role: "analyst", status: "active" },
@@ -16,17 +19,10 @@ export default function UsersPage() {
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState("analyst");
+  const [notice, setNotice] = useState("");
 
-  if (!isAdmin()) {
-    return (
-      <div className="page-container">
-        <h1>User Management</h1>
-        <p style={{ color: "var(--text-faint)" }}>
-          You don't have permission to view this page. Admin access is required.
-        </p>
-      </div>
-    );
-  }
+  // The currently signed-in admin must not be able to delete their own account.
+  const isSelf = (u: User) => currentUser?.email === u.email;
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,19 +44,41 @@ export default function UsersPage() {
     setShowForm(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (target: User) => {
+    // Guard against self-deletion even if the disabled button is bypassed.
+    if (isSelf(target)) {
+      setNotice("You cannot delete your own admin account while logged in.");
+      return;
+    }
     if (!window.confirm("Delete this user? This cannot be undone.")) return;
-    setUsers(users.filter((u) => u.id !== id));
+    setUsers(users.filter((u) => u.id !== target.id));
   };
 
   return (
     <div className="page-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h1>User Management</h1>
+        <h1>
+          User Management
+          <HelpTip text="Create, view, and remove workspace users and their roles. This admin-only area controls who can access PenguWave and what they can do." />
+        </h1>
         <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Add User"}
         </button>
       </div>
+
+      {notice && (
+        <div className="warning-banner" role="alert">
+          <span>⚠️ {notice}</span>
+          <button
+            type="button"
+            className="warning-banner-close"
+            onClick={() => setNotice("")}
+            aria-label="Dismiss warning"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {showForm && (
         <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: 16, marginBottom: 20, background: "var(--bg-subtle)" }}>
@@ -112,26 +130,38 @@ export default function UsersPage() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <span style={{ color: user.status === "active" ? "#16a34a" : "var(--text-faint)" }}>
-                  {user.status}
-                </span>
-              </td>
-              <td>
-                <button
-                  type="button"
-                  className="btn-danger btn-sm"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
+          {users.map((user) => {
+            const self = isSelf(user);
+            return (
+              <tr key={user.id}>
+                <td>
+                  {user.email}
+                  {self && <span className="you-badge">You</span>}
+                </td>
+                <td>{user.role}</td>
+                <td>
+                  <span style={{ color: user.status === "active" ? "#16a34a" : "var(--text-faint)" }}>
+                    {user.status}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn-danger btn-sm"
+                    onClick={() => handleDelete(user)}
+                    disabled={self}
+                    title={
+                      self
+                        ? "You cannot delete your own admin account while logged in."
+                        : "Delete user"
+                    }
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
         </table>
       </div>

@@ -1,42 +1,38 @@
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../useAuth";
+import { ROLE_INFO } from "../auth";
 
 interface NavbarProps {
-  userEmail: string | null;
   theme: "dark" | "light";
   onToggleTheme: () => void;
-  onLoginClick: () => void;
-  onLogout: () => void;
+  onOpenChat: () => void;
 }
 
-export default function Navbar({
-  userEmail,
-  theme,
-  onToggleTheme,
-  onLoginClick,
-  onLogout,
-}: NavbarProps) {
-  const location = useLocation();
+/**
+ * Top navigation bar. Primary page navigation now lives in the left sidebar;
+ * the navbar holds the brand, the AI assistant launcher, the theme toggle, the
+ * signed-in identity, and logout.
+ */
+export default function Navbar({ theme, onToggleTheme, onOpenChat }: NavbarProps) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/events" style={{ textDecoration: "none", color: "inherit" }}>
-          PenguWave 🐧
-        </Link>
-      </div>
+      <div className="navbar-brand">PenguWave 🐧</div>
       <div className="navbar-links">
-        <Link
-          to="/events"
-          className={location.pathname.startsWith("/events") ? "active" : ""}
+        <button
+          onClick={onOpenChat}
+          className="btn-secondary btn-sm"
+          title="Open the AI security assistant (demo)"
         >
-          Events
-        </Link>
-        <Link
-          to="/users"
-          className={location.pathname === "/users" ? "active" : ""}
-        >
-          Users
-        </Link>
+          🤖 Ask Pengu
+        </button>
         <button
           onClick={onToggleTheme}
           className="btn-secondary btn-icon"
@@ -45,19 +41,16 @@ export default function Navbar({
         >
           {theme === "dark" ? "☀️" : "🌙"}
         </button>
-        {userEmail ? (
+        {user && (
           <>
-            <span className="navbar-user" title={userEmail}>
-              {userEmail}
+            <span className="navbar-user" title={`${user.email} · ${ROLE_INFO[user.role].label}`}>
+              {user.email}
+              <span className="navbar-role">{ROLE_INFO[user.role].label}</span>
             </span>
-            <button onClick={onLogout} className="btn-secondary btn-sm">
+            <button onClick={handleLogout} className="btn-secondary btn-sm">
               Logout
             </button>
           </>
-        ) : (
-          <button onClick={onLoginClick} className="btn-secondary btn-sm">
-            Login
-          </button>
         )}
       </div>
     </nav>

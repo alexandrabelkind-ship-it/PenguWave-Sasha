@@ -41,6 +41,12 @@ export function toCsv(rows: Record<string, unknown>[]): string {
   return [headers.map(escapeCsvField).join(","), ...lines].join("\n");
 }
 
+/** Format a timestamp, falling back gracefully for missing/invalid values. */
+export function formatTimestamp(timestamp: string): string {
+  const date = new Date(timestamp);
+  return isNaN(date.getTime()) ? "—" : date.toLocaleString();
+}
+
 /** Human-readable fallbacks for missing or empty event fields. */
 const EVENT_FALLBACK = {
   text: "—",

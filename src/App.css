@@ -409,16 +409,46 @@ label {
 
 /* Chips */
 .severity-chips,
-.tag-list,
-.tag-filter {
+.tag-list {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
 }
 
-.tag-filter {
+/* Compact tag filter: a small search input + a single horizontally
+   scrolling row of tag chips, instead of a large wrapping cloud. */
+.tag-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 16px;
+  min-width: 0;
+}
+
+.tag-search {
+  width: 150px;
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.tag-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-items: center;
+  overflow-x: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.tag-scroll .tag-chip {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .severity-chip {

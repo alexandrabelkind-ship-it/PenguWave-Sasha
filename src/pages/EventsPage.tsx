@@ -75,6 +75,7 @@ export default function EventsPage() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagSearch, setTagSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(null);
@@ -103,6 +104,7 @@ export default function EventsPage() {
     setDateFrom("");
     setDateTo("");
     setSelectedTags([]);
+    setTagSearch("");
   };
 
   // Every unique tag, ordered by frequency, for the tag-filter chips.
@@ -111,6 +113,14 @@ export default function EventsPage() {
     events.forEach((e) => e.tags.forEach((t) => freq.set(t, (freq.get(t) ?? 0) + 1)));
     return [...freq.entries()].sort((a, b) => b[1] - a[1]).map(([tag]) => tag);
   }, [events]);
+
+  // Tags shown in the compact tag bar, narrowed by the in-bar text filter.
+  // Selected tags always stay visible so they can be toggled off.
+  const visibleTags = useMemo(() => {
+    const q = tagSearch.trim().toLowerCase();
+    if (!q) return allTags;
+    return allTags.filter((t) => t.toLowerCase().includes(q) || selectedTags.includes(t));
+  }, [allTags, tagSearch, selectedTags]);
 
   // Apply search + date + tags first. Severity is applied separately so the
   // severity chips can show meaningful counts within the current scope and act
@@ -272,21 +282,35 @@ export default function EventsPage() {
           </div>
 
           {allTags.length > 0 && (
-            <div className="tag-filter">
-              {allTags.map((tag) => {
-                const active = selectedTags.includes(tag);
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    className={`tag-chip clickable${active ? " active" : ""}`}
-                    onClick={() => toggleTag(tag)}
-                    aria-pressed={active}
-                  >
-                    {tag}
-                  </button>
-                );
-              })}
+            <div className="tag-filter-bar">
+              <input
+                type="text"
+                className="tag-search"
+                placeholder="Filter tags…"
+                value={tagSearch}
+                onChange={(e) => setTagSearch(e.target.value)}
+                aria-label="Filter tags"
+              />
+              <div className="tag-scroll">
+                {visibleTags.length === 0 ? (
+                  <span style={{ color: "var(--text-faint)", fontSize: 12 }}>No matching tags</span>
+                ) : (
+                  visibleTags.map((tag) => {
+                    const active = selectedTags.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        className={`tag-chip clickable${active ? " active" : ""}`}
+                        onClick={() => toggleTag(tag)}
+                        aria-pressed={active}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
             </div>
           )}
 

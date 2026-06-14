@@ -26,7 +26,7 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
           <SeverityBadge severity={event.severity} />
           <h2 style={{ margin: 0 }}>{event.title}</h2>
         </div>
-        <button onClick={onClose} style={{ cursor: "pointer" }}>
+        <button onClick={onClose} className="btn-secondary btn-sm">
           Close
         </button>
       </div>
@@ -59,7 +59,7 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
 
       <button
         type="button"
-        className="link-button"
+        className="btn-ghost btn-sm"
         onClick={() => setShowRaw((v) => !v)}
         aria-expanded={showRaw}
       >

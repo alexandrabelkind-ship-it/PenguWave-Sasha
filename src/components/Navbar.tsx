@@ -39,7 +39,7 @@ export default function Navbar({
         </Link>
         <button
           onClick={onToggleTheme}
-          className="navbar-login-btn"
+          className="btn-secondary btn-icon"
           title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           aria-label="Toggle color theme"
         >
@@ -50,12 +50,12 @@ export default function Navbar({
             <span className="navbar-user" title={userEmail}>
               {userEmail}
             </span>
-            <button onClick={onLogout} className="navbar-login-btn">
+            <button onClick={onLogout} className="btn-secondary btn-sm">
               Logout
             </button>
           </>
         ) : (
-          <button onClick={onLoginClick} className="navbar-login-btn">
+          <button onClick={onLoginClick} className="btn-secondary btn-sm">
             Login
           </button>
         )}

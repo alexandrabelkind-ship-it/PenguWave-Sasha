@@ -262,7 +262,7 @@ export default function EventsPage() {
               <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
             </label>
             {hasActiveFilter && (
-              <button type="button" className="link-button" onClick={clearFilters}>
+              <button type="button" className="btn-ghost btn-sm" onClick={clearFilters}>
                 Clear filters
               </button>
             )}
@@ -348,6 +348,7 @@ export default function EventsPage() {
               <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center" }}>
                 <span style={{ fontSize: 13, color: "var(--text-muted)" }}>Export {sorted.length}:</span>
                 <button
+                  className="btn-secondary btn-sm"
                   onClick={() =>
                     downloadFile(
                       JSON.stringify(sorted, null, 2),
@@ -355,11 +356,11 @@ export default function EventsPage() {
                       "application/json"
                     )
                   }
-                  style={{ fontSize: 13 }}
                 >
                   JSON
                 </button>
                 <button
+                  className="btn-secondary btn-sm"
                   onClick={() =>
                     downloadFile(
                       toCsv(sorted as unknown as Record<string, unknown>[]),
@@ -367,7 +368,6 @@ export default function EventsPage() {
                       "text/csv"
                     )
                   }
-                  style={{ fontSize: 13 }}
                 >
                   CSV
                 </button>

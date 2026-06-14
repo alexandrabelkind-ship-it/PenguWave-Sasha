@@ -123,8 +123,8 @@ export default function UsersPage() {
               <td>
                 <button
                   type="button"
+                  className="btn-danger btn-sm"
                   onClick={() => handleDelete(user.id)}
-                  style={{ color: "red", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                 >
                   Delete
                 </button>

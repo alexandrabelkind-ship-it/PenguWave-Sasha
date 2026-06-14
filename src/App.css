@@ -673,6 +673,97 @@ th.sortable:hover {
   color: var(--text);
 }
 
+/* App shell: sidebar + main content area */
+.app-shell {
+  display: flex;
+  align-items: stretch;
+  min-height: calc(100vh - 53px); /* viewport minus navbar height */
+}
+
+.sidebar {
+  flex: 0 0 220px;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 16px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.sidebar-link:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.sidebar-link.active {
+  background: var(--row-selected);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sidebar-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  width: 100%;
+}
+
+/* Access denied screen */
+.access-denied {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 64px 20px;
+}
+
+.access-denied-icon {
+  font-size: 56px;
+  margin-bottom: 12px;
+}
+
+.access-denied h1 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.access-denied-lead {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.access-denied-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
 /* Login page */
 .login-page {
   min-height: 100vh;

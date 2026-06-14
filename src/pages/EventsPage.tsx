@@ -1,32 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import mockEvents from "../../data/mock_events.json";
 import { SecurityEvent } from "../types";
-import { toCsv, normalizeEvent, formatTimestamp } from "../utils";
+import { toCsv, formatTimestamp } from "../utils";
 import { severityRank } from "../severity";
+import { loadEvents } from "../eventsData";
 import SummaryPanel from "../components/SummaryPanel";
 import EventDetail from "../components/EventDetail";
 import SeverityBadge from "../components/SeverityBadge";
+import HelpTip from "../components/HelpTip";
 
 type LoadStatus = "loading" | "error" | "success";
 type SortKey = "severity" | "title" | "assetHostname" | "sourceIp" | "timestamp";
 type SortDir = "asc" | "desc";
-
-// Demo only: a small delay so the loading state is visible. Remove once the
-// real API call (which has genuine latency) replaces the mock loader below.
-const SIMULATED_LATENCY_MS = 600;
-
-/**
- * Load and normalize events. Currently backed by the static mock import; swap
- * the body for `getEvents()` from ../api when the backend exists — the caller
- * already handles loading, error, and empty states.
- */
-function loadEvents(): Promise<SecurityEvent[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve((mockEvents as Record<string, unknown>[]).map(normalizeEvent));
-    }, SIMULATED_LATENCY_MS);
-  });
-}
 
 /** Trigger a client-side file download for the given text content. */
 function downloadFile(content: string, filename: string, mimeType: string) {
@@ -234,7 +218,10 @@ export default function EventsPage() {
 
   return (
     <div className="page-container">
-      <h1>Security Events</h1>
+      <h1>
+        Security Events
+        <HelpTip text="A searchable, filterable log of detected security events across your fleet. Click any row for full details, or export the filtered set as JSON/CSV." />
+      </h1>
 
       {status === "loading" && <SkeletonTable />}
 

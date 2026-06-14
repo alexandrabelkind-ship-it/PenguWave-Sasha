@@ -1,53 +1,88 @@
-const API_URL = "http://localhost:3001";
+// API client for the PenguWave backend.
+//
+// The base URL is configurable via VITE_API_URL so the same build can target
+// different environments. Secrets are NEVER hardcoded here — anything shipped
+// to the browser bundle is public. The per-user bearer token (obtained at
+// login) is the only credential the client holds.
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
-// Static service key used to talk to the events backend.
-const API_TOKEN = "pw_live_sk_3f9a2c8e1b7d4f60a5c9e2d1";
+function authHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const token = localStorage.getItem("token");
+  return {
+    ...extra,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
 
-export async function login(email: string, password: string) {
-  console.log("Login attempt:", email, password);
-  const res = await fetch(`${API_URL}/api/auth/login`, {
+/**
+ * Wrapper around fetch that enforces a consistent error contract: non-2xx
+ * responses throw with the server-provided message, and the parsed JSON body
+ * is returned on success. Without this, error bodies silently flow back to
+ * callers as if they were valid data.
+ */
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, init);
+  let body: unknown = null;
+  try {
+    body = await res.json();
+  } catch {
+    // Response had no JSON body (e.g. a 204 or a network/proxy error page).
+  }
+
+  if (!res.ok) {
+    const message =
+      (body as { error?: string } | null)?.error ?? `Request failed (${res.status})`;
+    throw new Error(message);
+  }
+  return body as T;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: { id: string; email: string; role: string };
+}
+
+export async function login(email: string, password: string): Promise<AuthResponse> {
+  const data = await request<AuthResponse>("/api/auth/login", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Api-Key": API_TOKEN },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  const data = await res.json();
   localStorage.setItem("token", data.token);
+  if (data.user?.role) {
+    localStorage.setItem("role", data.user.role);
+  }
   return data;
 }
 
-// Returns only the events the current user is allowed to see —
-// the backend already filters results per-user, so no extra checks are needed here.
+export async function logout(): Promise<void> {
+  try {
+    await request("/api/auth/logout", { method: "POST", headers: authHeaders() });
+  } finally {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+  }
+}
+
 export async function getEvents() {
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/events`, {
-    headers: { Authorization: `Bearer ${token}`, "X-Api-Key": API_TOKEN },
-  });
-  return res.json();
+  return request("/api/events", { headers: authHeaders() });
 }
 
 export async function getUsers() {
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/users`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.json();
+  return request("/api/users", { headers: authHeaders() });
 }
 
 export async function createUser(user: { email: string; password: string; role: string }) {
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/users`, {
+  return request("/api/users", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers: authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(user),
   });
-  return res.json();
 }
 
 export async function deleteUser(id: string) {
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/users/${id}`, {
+  return request(`/api/users/${encodeURIComponent(id)}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: authHeaders(),
   });
-  return res.json();
 }

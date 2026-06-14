@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { login } from "../api";
 
 interface LoginModalProps {
   onClose: () => void;
@@ -7,26 +8,22 @@ interface LoginModalProps {
 export default function LoginModal({ onClose }: LoginModalProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login:", email, password);
-
-    // Try to call backend (will fail if no backend running)
-    fetch("http://localhost:3001/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        localStorage.setItem("token", data.token);
-      })
-      .catch(() => {
-        // Backend not running — just close the modal
-      });
-
-    onClose();
+    setError("");
+    setSubmitting(true);
+    try {
+      // login() validates res.ok, throws on failure, and persists the token.
+      await login(email, password);
+      onClose(); // only close on a successful authentication
+    } catch {
+      setError("Invalid email or password");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -58,8 +55,18 @@ export default function LoginModal({ onClose }: LoginModalProps) {
               placeholder="••••••••"
             />
           </div>
-          <button type="submit" className="btn-primary" style={{ width: "100%" }}>
-            Sign In
+          {error && (                             // ← ADD: show error message
+            <p style={{ color: "red", fontSize: 13, marginBottom: 12 }}>
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{ width: "100%" }}
+            disabled={submitting}
+          >
+            {submitting ? "Signing in…" : "Sign In"}
           </button>
         </form>
       </div>

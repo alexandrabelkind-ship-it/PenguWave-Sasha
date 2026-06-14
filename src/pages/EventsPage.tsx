@@ -303,6 +303,38 @@ export default function EventsPage() {
             </div>
           )}
 
+          <div className="export-bar">
+            <span className="export-bar-label">
+              Export {sorted.length} {sorted.length === 1 ? "event" : "events"}:
+            </span>
+            <button
+              className="btn-secondary btn-sm"
+              disabled={sorted.length === 0}
+              onClick={() =>
+                downloadFile(
+                  JSON.stringify(sorted, null, 2),
+                  "penguwave_events_export.json",
+                  "application/json"
+                )
+              }
+            >
+              JSON
+            </button>
+            <button
+              className="btn-secondary btn-sm"
+              disabled={sorted.length === 0}
+              onClick={() =>
+                downloadFile(
+                  toCsv(sorted as unknown as Record<string, unknown>[]),
+                  "penguwave_events_export.csv",
+                  "text/csv"
+                )
+              }
+            >
+              CSV
+            </button>
+          </div>
+
           {events.length === 0 ? (
             <div className="empty-state">
               <p>No events have been recorded yet.</p>
@@ -358,34 +390,6 @@ export default function EventsPage() {
                   ))}
                   </tbody>
                 </table>
-              </div>
-
-              <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center" }}>
-                <span style={{ fontSize: 13, color: "var(--text-muted)" }}>Export {sorted.length}:</span>
-                <button
-                  className="btn-secondary btn-sm"
-                  onClick={() =>
-                    downloadFile(
-                      JSON.stringify(sorted, null, 2),
-                      "penguwave_events_export.json",
-                      "application/json"
-                    )
-                  }
-                >
-                  JSON
-                </button>
-                <button
-                  className="btn-secondary btn-sm"
-                  onClick={() =>
-                    downloadFile(
-                      toCsv(sorted as unknown as Record<string, unknown>[]),
-                      "penguwave_events_export.csv",
-                      "text/csv"
-                    )
-                  }
-                >
-                  CSV
-                </button>
               </div>
             </>
           )}

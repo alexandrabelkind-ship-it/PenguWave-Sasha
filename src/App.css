@@ -606,6 +606,22 @@ label {
   white-space: nowrap;
 }
 
+/* Export controls — sit directly below the filters section */
+.export-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.export-bar-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 /* Sortable headers */
 th.sortable {
   cursor: pointer;

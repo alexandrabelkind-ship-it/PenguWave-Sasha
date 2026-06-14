@@ -42,8 +42,9 @@ function downloadFile(content: string, filename: string, mimeType: string) {
 /** Placeholder table shown while events are loading. */
 function SkeletonTable() {
   return (
-    <table aria-hidden="true">
-      <thead>
+    <div className="table-wrap">
+      <table aria-hidden="true">
+        <thead>
         <tr>
           <th>Severity</th>
           <th>Title</th>
@@ -62,8 +63,9 @@ function SkeletonTable() {
             ))}
           </tr>
         ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -329,8 +331,9 @@ export default function EventsPage() {
             </div>
           ) : (
             <>
-              <table>
-                <thead>
+              <div className="table-wrap">
+                <table>
+                  <thead>
                   <tr>
                     {columns.map(({ key, label }) => (
                       <th
@@ -366,8 +369,9 @@ export default function EventsPage() {
                       <td style={{ fontSize: 13 }}>{formatTimestamp(event.timestamp)}</td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
 
               <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center" }}>
                 <span style={{ fontSize: 13, color: "var(--text-muted)" }}>Export {sorted.length}:</span>

@@ -672,3 +672,68 @@ th.sortable:hover {
   margin-top: 8px;
   color: var(--text);
 }
+
+/* Mobile / small screens */
+@media (max-width: 700px) {
+  .container {
+    padding: 16px 14px;
+  }
+
+  .navbar {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .navbar-links {
+    gap: 14px;
+    row-gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .navbar-user {
+    max-width: 120px;
+  }
+
+  /* Stack summary cards full width */
+  .summary-panel {
+    flex-direction: column;
+  }
+
+  .stat-card {
+    width: 100%;
+  }
+
+  /* Stack filters vertically and let them fill the width */
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar > input {
+    max-width: none !important;
+  }
+
+  .date-field,
+  .date-field input {
+    width: 100%;
+  }
+
+  .result-count {
+    margin-left: 0;
+  }
+
+  /* Single-column detail grid in the drawer; drawer fills the screen */
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .drawer {
+    max-width: 100%;
+  }
+
+  /* Tables scroll horizontally inside their wrapper instead of overflowing */
+  .table-wrap table {
+    min-width: 560px;
+  }
+}

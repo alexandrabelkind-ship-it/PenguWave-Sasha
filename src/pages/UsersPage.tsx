@@ -101,10 +101,11 @@ export default function UsersPage() {
         </div>
       )}
 
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
             <th>Role</th>
             <th>Status</th>
             <th>Actions</th>
@@ -132,9 +133,10 @@ export default function UsersPage() {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
 
-      {users.length === 0 && <p style={{ color: "#999" }}>No users.</p>}
+      {users.length === 0 && <p style={{ color: "var(--text-faint)" }}>No users.</p>}
     </div>
   );
 }

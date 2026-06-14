@@ -864,6 +864,270 @@ th.sortable:hover {
   text-align: center;
 }
 
+/* Dashboard */
+.dashboard-greeting {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.summary-stat {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 84px;
+}
+
+.summary-total {
+  border-color: var(--primary);
+}
+
+.summary-stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.summary-stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.summary-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+/* Chart panel */
+.chart-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.chart-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.chart-tabs {
+  display: inline-flex;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 2px;
+}
+
+.chart-tab {
+  width: auto;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.chart-tab:hover {
+  color: var(--text);
+}
+
+.chart-tab.active {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+
+.chart-caption {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 12px 0 16px;
+  line-height: 1.5;
+}
+
+.chart-body {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-empty {
+  color: var(--text-faint);
+  font-size: 14px;
+  padding: 40px;
+}
+
+/* Donut */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.donut-svg {
+  width: 180px;
+  height: 180px;
+  flex: 0 0 auto;
+}
+
+.donut-total {
+  font-size: 26px;
+  font-weight: 700;
+  fill: var(--text);
+}
+
+.donut-sub {
+  font-size: 9px;
+  fill: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.donut-legend {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.donut-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+
+.legend-label {
+  font-weight: 600;
+  min-width: 72px;
+  color: var(--text);
+}
+
+.legend-value {
+  color: var(--text-muted);
+}
+
+/* Timeline */
+.timeline-svg {
+  width: 100%;
+  height: auto;
+}
+
+.chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-axis {
+  fill: var(--text-faint);
+  font-size: 9px;
+}
+
+.timeline-area {
+  fill: var(--primary);
+  opacity: 0.12;
+}
+
+.timeline-line {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.timeline-dot {
+  fill: var(--primary);
+}
+
+/* Horizontal bars */
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar-label {
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-track {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-pill);
+  height: 14px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+  border-radius: var(--radius-pill);
+  min-width: 2px;
+  transition: width 0.3s ease;
+}
+
+.bar-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: right;
+}
+
 /* Help tooltips — a small "?" affordance next to features/metrics */
 .helptip {
   position: relative;

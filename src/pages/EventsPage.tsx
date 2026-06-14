@@ -1,7 +1,24 @@
 import { useState } from "react";
 import mockEvents from "../../data/mock_events.json";
 import { SecurityEvent } from "../types";
-import { sanitizeHtml } from "../utils";
+import { sanitizeHtml, toCsv } from "../utils";
+
+/** Format a timestamp, falling back gracefully for missing/invalid values. */
+function formatTimestamp(timestamp: string): string {
+  const date = new Date(timestamp);
+  return isNaN(date.getTime()) ? "—" : date.toLocaleString();
+}
+
+/** Trigger a client-side file download for the given text content. */
+function downloadFile(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function EventsPage() {
   const [search, setSearch] = useState("");
@@ -54,12 +71,7 @@ export default function EventsPage() {
 
       {search && (
         <p>
-          <span
-            dangerouslySetInnerHTML={{
-              __html: sanitizeHtml("Showing results for: <strong>" + search + "</strong>"),
-            }}
-          />
-          {" "}({filtered.length} events)
+          Showing results for: <strong>{search}</strong> ({filtered.length} events)
         </p>
       )}
 
@@ -91,7 +103,7 @@ export default function EventsPage() {
                 {event.sourceIp}
               </td>
               <td style={{ fontSize: 13 }}>
-                {new Date(event.timestamp).toLocaleString()}
+                {formatTimestamp(event.timestamp)}
               </td>
             </tr>
           ))}
@@ -100,20 +112,32 @@ export default function EventsPage() {
 
       {filtered.length === 0 && <p style={{ color: "#999" }}>No events found.</p>}
 
-      <div style={{ marginTop: 12 }}>
+      <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
         <button
-          onClick={() => {
-            const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "penguwave_events_export.json";
-            a.click();
-            URL.revokeObjectURL(url);
-          }}
+          onClick={() =>
+            downloadFile(
+              JSON.stringify(filtered, null, 2),
+              "penguwave_events_export.json",
+              "application/json"
+            )
+          }
+          disabled={filtered.length === 0}
           style={{ fontSize: 13 }}
         >
           Export Events (JSON)
+        </button>
+        <button
+          onClick={() =>
+            downloadFile(
+              toCsv(filtered as unknown as Record<string, unknown>[]),
+              "penguwave_events_export.csv",
+              "text/csv"
+            )
+          }
+          disabled={filtered.length === 0}
+          style={{ fontSize: 13 }}
+        >
+          Export Events (CSV)
         </button>
       </div>
 
@@ -135,11 +159,9 @@ export default function EventsPage() {
           <p>
             <strong>Description:</strong>
           </p>
-          {/* render rich text descriptions */}
+          {/* Descriptions may contain limited rich-text markup; sanitize before rendering. */}
           <div
-            ref={(el) => {
-              if (el) el.innerHTML = sanitizeHtml(selectedEvent.description);
-            }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(selectedEvent.description) }}
           />
           <p>
             <strong>Asset:</strong> {selectedEvent.assetHostname} ({selectedEvent.assetIp})
@@ -148,10 +170,10 @@ export default function EventsPage() {
             <strong>Source IP:</strong> {selectedEvent.sourceIp}
           </p>
           <p>
-            <strong>Tags:</strong> {selectedEvent.tags.join(", ")}
+            <strong>Tags:</strong> {selectedEvent.tags?.length ? selectedEvent.tags.join(", ") : "—"}
           </p>
           <p>
-            <strong>Timestamp:</strong> {new Date(selectedEvent.timestamp).toLocaleString()}
+            <strong>Timestamp:</strong> {formatTimestamp(selectedEvent.timestamp)}
           </p>
           <h3>Raw Event Data</h3>
           <pre>{JSON.stringify(selectedEvent, null, 2)}</pre>

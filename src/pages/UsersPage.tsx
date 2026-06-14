@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { User } from "../types";
 import HelpTip from "../components/HelpTip";
+import { useAuth } from "../useAuth";
 
 export default function UsersPage() {
+  const { user: currentUser } = useAuth();
+
   // Access to this page is gated by RBAC at the route level (admin only). The
   // backend MUST still enforce authorization on every /api/users request — the
   // client guard is a convenience for hiding UI, not a security control.
@@ -16,6 +19,10 @@ export default function UsersPage() {
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState("analyst");
+  const [notice, setNotice] = useState("");
+
+  // The currently signed-in admin must not be able to delete their own account.
+  const isSelf = (u: User) => currentUser?.email === u.email;
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,9 +44,14 @@ export default function UsersPage() {
     setShowForm(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (target: User) => {
+    // Guard against self-deletion even if the disabled button is bypassed.
+    if (isSelf(target)) {
+      setNotice("You cannot delete your own admin account while logged in.");
+      return;
+    }
     if (!window.confirm("Delete this user? This cannot be undone.")) return;
-    setUsers(users.filter((u) => u.id !== id));
+    setUsers(users.filter((u) => u.id !== target.id));
   };
 
   return (
@@ -53,6 +65,20 @@ export default function UsersPage() {
           {showForm ? "Cancel" : "Add User"}
         </button>
       </div>
+
+      {notice && (
+        <div className="warning-banner" role="alert">
+          <span>⚠️ {notice}</span>
+          <button
+            type="button"
+            className="warning-banner-close"
+            onClick={() => setNotice("")}
+            aria-label="Dismiss warning"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {showForm && (
         <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: 16, marginBottom: 20, background: "var(--bg-subtle)" }}>
@@ -104,26 +130,38 @@ export default function UsersPage() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <span style={{ color: user.status === "active" ? "#16a34a" : "var(--text-faint)" }}>
-                  {user.status}
-                </span>
-              </td>
-              <td>
-                <button
-                  type="button"
-                  className="btn-danger btn-sm"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
+          {users.map((user) => {
+            const self = isSelf(user);
+            return (
+              <tr key={user.id}>
+                <td>
+                  {user.email}
+                  {self && <span className="you-badge">You</span>}
+                </td>
+                <td>{user.role}</td>
+                <td>
+                  <span style={{ color: user.status === "active" ? "#16a34a" : "var(--text-faint)" }}>
+                    {user.status}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn-danger btn-sm"
+                    onClick={() => handleDelete(user)}
+                    disabled={self}
+                    title={
+                      self
+                        ? "You cannot delete your own admin account while logged in."
+                        : "Delete user"
+                    }
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
         </table>
       </div>

@@ -205,3 +205,48 @@ label {
   margin-bottom: 6px;
   line-height: 1.5;
 }
+
+/* Loading / error / empty states */
+.skeleton-bar {
+  display: block;
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #fdecea;
+  border: 1px solid #f5c6c2;
+  border-radius: 4px;
+  color: #8a1c12;
+}
+
+.error-banner button {
+  flex-shrink: 0;
+}
+
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: #999;
+  background: white;
+  border: 1px solid #ddd;
+}
+
+.empty-state button {
+  margin-top: 12px;
+  width: auto;
+  display: inline-block;
+}

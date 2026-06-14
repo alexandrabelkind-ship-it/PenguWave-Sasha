@@ -15,7 +15,12 @@ export function sanitizeHtml(input: string): string {
 export function toCsv(rows: Record<string, unknown>[]): string {
   if (rows.length === 0) return "";
   const headers = Object.keys(rows[0]);
-  const lines = rows.map((r) => headers.map((h) => String(r[h] ?? "")).join(","));
+  const lines = rows.map((r) =>
+    headers.map((h) => {
+      const value = String(r[h] ?? "");
+      return `"${value.replace(/"/g, '""')}"`;  // ← CHANGED: wrap in quotes, escape internal quotes
+    }).join(",")
+  );
   return [headers.join(","), ...lines].join("\n");
 }
 

@@ -89,25 +89,6 @@ export default function DashboardPage() {
             ))}
           </section>
 
-          <section className="severity-legend">
-            <h2 className="section-title">
-              What the severity levels mean
-              <HelpTip text="Use these definitions to prioritize your response. Higher severities demand faster action." />
-            </h2>
-            <dl className="severity-legend-list">
-              {SEVERITIES.map((severity) => (
-                <div key={severity} className="severity-legend-item">
-                  <dt>
-                    <span className="severity-badge" style={{ backgroundColor: severityColor(severity) }}>
-                      {severity}
-                    </span>
-                  </dt>
-                  <dd>{SEVERITY_DESCRIPTIONS[severity]}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-
           <SecurityCharts events={events} />
         </>
       )}

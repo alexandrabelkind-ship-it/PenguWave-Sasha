@@ -14,14 +14,14 @@ export default function NotFound() {
    \\___)=(___/
 `}
       </pre>
-      <h1 style={{ fontSize: 48, margin: "20px 0 10px", color: "#333" }}>404</h1>
-      <p style={{ fontSize: 18, color: "#666", marginBottom: 8 }}>
+      <h1 style={{ fontSize: 48, margin: "20px 0 10px", color: "var(--text)" }}>404</h1>
+      <p style={{ fontSize: 18, color: "var(--text-muted)", marginBottom: 8 }}>
         This penguin got lost at sea 🐧
       </p>
-      <p style={{ color: "#999", marginBottom: 30 }}>
+      <p style={{ color: "var(--text-faint)", marginBottom: 30 }}>
         The page you're looking for doesn't exist or has been moved.
       </p>
-      <Link to="/events" style={{ color: "#0066cc" }}>
+      <Link to="/events" style={{ color: "var(--primary)" }}>
         ← Back to shore
       </Link>
     </div>

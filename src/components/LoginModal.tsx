@@ -33,7 +33,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
           ✕
         </button>
         <h2>Sign In</h2>
-        <p style={{ color: "#666", marginBottom: 20, fontSize: 14 }}>
+        <p style={{ color: "var(--text-muted)", marginBottom: 20, fontSize: 14 }}>
           Enter your credentials to access PenguWave
         </p>
         <form onSubmit={handleSubmit}>
@@ -55,8 +55,8 @@ export default function LoginModal({ onClose }: LoginModalProps) {
               placeholder="••••••••"
             />
           </div>
-          {error && (                             // ← ADD: show error message
-            <p style={{ color: "red", fontSize: 13, marginBottom: 12 }}>
+          {error && (
+            <p style={{ color: "var(--danger)", fontSize: 13, marginBottom: 12 }}>
               {error}
             </p>
           )}

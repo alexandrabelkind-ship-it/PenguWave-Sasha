@@ -346,7 +346,7 @@ export default function EventsPage() {
               </table>
 
               <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center" }}>
-                <span style={{ fontSize: 13, color: "#666" }}>Export {sorted.length}:</span>
+                <span style={{ fontSize: 13, color: "var(--text-muted)" }}>Export {sorted.length}:</span>
                 <button
                   onClick={() =>
                     downloadFile(

@@ -50,7 +50,7 @@ export default function SummaryPanel({
         <span className="stat-label">Top tags</span>
         <div className="tag-list">
           {topTags.length === 0 ? (
-            <span style={{ color: "#999", fontSize: 13 }}>—</span>
+            <span style={{ color: "var(--text-faint)", fontSize: 13 }}>—</span>
           ) : (
             topTags.map(({ tag, count }) => (
               <span key={tag} className="tag-chip">

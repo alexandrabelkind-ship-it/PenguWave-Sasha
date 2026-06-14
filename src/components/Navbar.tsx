@@ -2,11 +2,19 @@ import { Link, useLocation } from "react-router-dom";
 
 interface NavbarProps {
   userEmail: string | null;
+  theme: "dark" | "light";
+  onToggleTheme: () => void;
   onLoginClick: () => void;
   onLogout: () => void;
 }
 
-export default function Navbar({ userEmail, onLoginClick, onLogout }: NavbarProps) {
+export default function Navbar({
+  userEmail,
+  theme,
+  onToggleTheme,
+  onLoginClick,
+  onLogout,
+}: NavbarProps) {
   const location = useLocation();
 
   return (
@@ -29,6 +37,14 @@ export default function Navbar({ userEmail, onLoginClick, onLogout }: NavbarProp
         >
           Users
         </Link>
+        <button
+          onClick={onToggleTheme}
+          className="navbar-login-btn"
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          aria-label="Toggle color theme"
+        >
+          {theme === "dark" ? "☀️" : "🌙"}
+        </button>
         {userEmail ? (
           <>
             <span className="navbar-user" title={userEmail}>

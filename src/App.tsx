@@ -7,9 +7,15 @@ import UsersPage from "./pages/UsersPage";
 import NotFound from "./pages/NotFound";
 import { logout } from "./api";
 
+type Theme = "dark" | "light";
+
 /** Read the current auth identity from localStorage (null when logged out). */
 function readEmail(): string | null {
   return localStorage.getItem("token") ? localStorage.getItem("email") : null;
+}
+
+function readTheme(): Theme {
+  return localStorage.getItem("theme") === "light" ? "light" : "dark";
 }
 
 function App() {
@@ -19,6 +25,14 @@ function App() {
     () => !sessionStorage.getItem("login-dismissed")
   );
   const [userEmail, setUserEmail] = useState<string | null>(readEmail);
+  const [theme, setTheme] = useState<Theme>(readTheme);
+
+  const toggleTheme = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.setAttribute("data-theme", next);
+  };
 
   const handleCloseLogin = () => {
     sessionStorage.setItem("login-dismissed", "true");
@@ -36,6 +50,8 @@ function App() {
     <>
       <Navbar
         userEmail={userEmail}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onLoginClick={() => setShowLogin(true)}
         onLogout={handleLogout}
       />

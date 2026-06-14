@@ -21,7 +21,7 @@ export default function UsersPage() {
     return (
       <div className="page-container">
         <h1>User Management</h1>
-        <p style={{ color: "#999" }}>
+        <p style={{ color: "var(--text-faint)" }}>
           You don't have permission to view this page. Admin access is required.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function UsersPage() {
       </div>
 
       {showForm && (
-        <div style={{ border: "1px solid #ddd", padding: 16, marginBottom: 20, background: "#fafafa" }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: 16, marginBottom: 20, background: "var(--bg-subtle)" }}>
           <h3 style={{ marginBottom: 12 }}>New User</h3>
           <form onSubmit={handleAddUser}>
             <div style={{ marginBottom: 8 }}>
@@ -116,7 +116,7 @@ export default function UsersPage() {
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>
-                <span style={{ color: user.status === "active" ? "green" : "#999" }}>
+                <span style={{ color: user.status === "active" ? "#16a34a" : "var(--text-faint)" }}>
                   {user.status}
                 </span>
               </td>

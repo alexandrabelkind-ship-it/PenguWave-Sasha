@@ -113,12 +113,27 @@ body {
 }
 
 .navbar-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
   color: var(--text-muted);
-  max-width: 180px;
+  max-width: 240px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.navbar-role {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  background: var(--row-selected);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
 }
 
 /* Container */
@@ -1387,5 +1402,47 @@ th.sortable:hover {
   /* Tables scroll horizontally inside their wrapper instead of overflowing */
   .table-wrap table {
     min-width: 560px;
+  }
+
+  /* App shell: stack the sidebar above content as a horizontal nav bar */
+  .app-shell {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .sidebar {
+    flex-basis: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 10px;
+  }
+
+  .sidebar-nav {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 6px;
+  }
+
+  .sidebar-link {
+    white-space: nowrap;
+  }
+
+  .app-main {
+    padding: 16px 14px;
+  }
+
+  /* Chat widget fills most of the screen on small viewports */
+  .chat-widget {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+    width: auto;
+    height: 70vh;
+  }
+
+  /* Donut and legend stack vertically */
+  .donut-wrap {
+    gap: 16px;
   }
 }

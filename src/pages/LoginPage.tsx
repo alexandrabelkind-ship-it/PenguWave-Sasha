@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROLES, ROLE_INFO, Role } from "../auth";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../useAuth";
 
 /**
  * Dedicated, full-page login. The user first picks a role, which reveals the

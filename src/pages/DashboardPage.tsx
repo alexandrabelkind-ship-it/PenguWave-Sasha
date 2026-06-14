@@ -4,7 +4,7 @@ import { SEVERITIES, severityColor } from "../severity";
 import { loadEvents } from "../eventsData";
 import SecurityCharts from "../components/SecurityCharts";
 import HelpTip from "../components/HelpTip";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../useAuth";
 
 type LoadStatus = "loading" | "error" | "success";
 
@@ -15,7 +15,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     let active = true;
-    setStatus("loading");
     loadEvents()
       .then((data) => {
         if (!active) return;

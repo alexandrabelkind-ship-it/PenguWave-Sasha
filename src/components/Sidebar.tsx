@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Page } from "../auth";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../useAuth";
 
 interface NavItem {
   page: Page;

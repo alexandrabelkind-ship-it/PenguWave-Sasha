@@ -74,41 +74,44 @@ const DONUT_R = 45;
 const DONUT_C = 2 * Math.PI * DONUT_R;
 
 function SeverityDonut({ events }: { events: SecurityEvent[] }) {
-  const data = useMemo(() => {
+  const { data, total } = useMemo(() => {
     const counts: Record<string, number> = {};
     events.forEach((e) => (counts[e.severity] = (counts[e.severity] ?? 0) + 1));
-    return SEVERITIES.map((s) => ({ severity: s, count: counts[s] ?? 0 })).filter(
+    const present = SEVERITIES.map((s) => ({ severity: s, count: counts[s] ?? 0 })).filter(
       (d) => d.count > 0
     );
+    const sum = present.reduce((acc, d) => acc + d.count, 0);
+    // Pre-compute each arc's length and starting offset so rendering stays a
+    // pure map with no mid-render mutation.
+    const segments = present.map((d, i) => ({
+      ...d,
+      len: sum === 0 ? 0 : (d.count / sum) * DONUT_C,
+      offset: present
+        .slice(0, i)
+        .reduce((acc, p) => acc + (p.count / sum) * DONUT_C, 0),
+    }));
+    return { data: segments, total: sum };
   }, [events]);
-
-  const total = data.reduce((sum, d) => sum + d.count, 0);
 
   if (total === 0) return <EmptyChart />;
 
-  let offset = 0;
   return (
     <div className="donut-wrap">
       <svg viewBox="0 0 120 120" className="donut-svg" role="img" aria-label="Events by severity">
         <g transform="rotate(-90 60 60)">
-          {data.map((d) => {
-            const len = (d.count / total) * DONUT_C;
-            const seg = (
-              <circle
-                key={d.severity}
-                cx="60"
-                cy="60"
-                r={DONUT_R}
-                fill="none"
-                stroke={severityColor(d.severity)}
-                strokeWidth="18"
-                strokeDasharray={`${len} ${DONUT_C - len}`}
-                strokeDashoffset={-offset}
-              />
-            );
-            offset += len;
-            return seg;
-          })}
+          {data.map((d) => (
+            <circle
+              key={d.severity}
+              cx="60"
+              cy="60"
+              r={DONUT_R}
+              fill="none"
+              stroke={severityColor(d.severity)}
+              strokeWidth="18"
+              strokeDasharray={`${d.len} ${DONUT_C - d.len}`}
+              strokeDashoffset={-d.offset}
+            />
+          ))}
         </g>
         <text x="60" y="56" textAnchor="middle" className="donut-total">
           {total}

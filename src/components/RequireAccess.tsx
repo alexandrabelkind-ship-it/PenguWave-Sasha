@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { Page } from "../auth";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../useAuth";
 import AccessDenied from "./AccessDenied";
 
 interface RequireAccessProps {

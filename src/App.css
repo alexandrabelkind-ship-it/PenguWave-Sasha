@@ -63,6 +63,15 @@ body {
   background: #f0f0f0;
 }
 
+.navbar-user {
+  font-size: 13px;
+  color: #555;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Container */
 .container {
   max-width: 1100px;
@@ -100,7 +109,17 @@ td {
   font-size: 13px;
 }
 
-/* no hover styles */
+tbody tr:hover {
+  background: #f0f4ff;
+}
+
+tbody tr.selected {
+  background: #e3ecff;
+}
+
+tbody tr.selected:hover {
+  background: #dbe6ff;
+}
 
 /* Inputs — basic browser defaults with minimal styling */
 input, select, textarea {
@@ -397,6 +416,13 @@ label {
 
 .link-button:hover {
   text-decoration: underline;
+}
+
+.result-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
 }
 
 /* Sortable headers */

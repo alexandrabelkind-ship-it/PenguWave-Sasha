@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SecurityEvent } from "../types";
-import { severityColor } from "../severity";
 import { formatTimestamp } from "../utils";
+import SeverityBadge from "./SeverityBadge";
 
 interface EventDetailProps {
   event: SecurityEvent;
@@ -23,9 +23,7 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
     <div className="event-detail">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span className="severity-badge" style={{ backgroundColor: severityColor(event.severity) }}>
-            {event.severity}
-          </span>
+          <SeverityBadge severity={event.severity} />
           <h2 style={{ margin: 0 }}>{event.title}</h2>
         </div>
         <button onClick={onClose} style={{ cursor: "pointer" }}>

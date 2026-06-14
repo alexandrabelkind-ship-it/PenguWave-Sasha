@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import mockEvents from "../../data/mock_events.json";
 import { SecurityEvent } from "../types";
 import { toCsv, normalizeEvent, formatTimestamp } from "../utils";
-import { severityColor, severityRank } from "../severity";
+import { severityRank } from "../severity";
 import SummaryPanel from "../components/SummaryPanel";
 import EventDetail from "../components/EventDetail";
+import SeverityBadge from "../components/SeverityBadge";
 
 type LoadStatus = "loading" | "error" | "success";
 type SortKey = "severity" | "title" | "assetHostname" | "sourceIp" | "timestamp";
@@ -265,6 +266,9 @@ export default function EventsPage() {
                 Clear filters
               </button>
             )}
+            <span className="result-count">
+              Showing {sorted.length} of {events.length} events
+            </span>
           </div>
 
           {allTags.length > 0 && (
@@ -324,10 +328,11 @@ export default function EventsPage() {
                     <tr
                       key={event.id}
                       onClick={() => setSelectedEvent(event)}
+                      className={selectedEvent?.id === event.id ? "selected" : undefined}
                       style={{ cursor: "pointer" }}
                     >
-                      <td style={{ color: severityColor(event.severity), fontWeight: 600 }}>
-                        {event.severity}
+                      <td>
+                        <SeverityBadge severity={event.severity} />
                       </td>
                       <td>{event.title}</td>
                       <td style={{ fontFamily: "monospace", fontSize: 13 }}>
